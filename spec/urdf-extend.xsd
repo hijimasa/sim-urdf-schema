@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://example.com/sim-urdf-schema"
+           xmlns:sim="http://example.com/sim-urdf-schema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+  <!-- ======== Joint Extensions ======== -->
+  <xs:element name="stiffness" type="xs:float"/>
+  <xs:element name="damping" type="xs:float"/>
+
+  <!-- ======== Simulation Container ======== -->
+  <xs:element name="simulation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="sensor" type="sim:sensorType" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ======== Sensor Definition ======== -->
+  <xs:complexType name="sensorType">
+    <xs:sequence>
+      <xs:element name="update_rate" type="xs:float"/>
+      <xs:choice minOccurs="0">
+        <xs:element name="ray" type="sim:rayType"/>
+      </xs:choice>
+      <xs:element name="horizontal_fov" type="xs:float" minOccurs="0"/>
+      <xs:element name="image" type="sim:imageType" minOccurs="0"/>
+      <xs:element name="clip" type="sim:clipType" minOccurs="0"/>
+      <xs:element name="topicName" type="xs:string"/>
+      <xs:element name="frameName" type="xs:string"/>
+      <xs:element name="cameraName" type="xs:string" minOccurs="0"/>
+      <xs:element name="imageTopicName" type="xs:string" minOccurs="0"/>
+      <xs:element name="cameraInfoTopicName" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="type" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="lidar"/>
+          <xs:enumeration value="camera"/>
+          <xs:enumeration value="depth_camera"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:complexType>
+
+  <!-- ======== Ray (LiDAR) ======== -->
+  <xs:complexType name="rayType">
+    <xs:sequence>
+      <xs:element name="scan" type="sim:scanType"/>
+      <xs:element name="range" type="sim:rangeType"/>
+      <xs:element name="noise" type="sim:noiseType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="scanType">
+    <xs:sequence>
+      <xs:element name="horizontal" type="sim:horizontalType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="horizontalType">
+    <xs:sequence>
+      <xs:element name="samples" type="xs:int"/>
+      <xs:element name="resolution" type="xs:int"/>
+      <xs:element name="min_angle" type="xs:float"/>
+      <xs:element name="max_angle" type="xs:float"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="rangeType">
+    <xs:sequence>
+      <xs:element name="min" type="xs:float"/>
+      <xs:element name="max" type="xs:float"/>
+      <xs:element name="resolution" type="xs:float"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="noiseType">
+    <xs:sequence>
+      <xs:element name="type" type="xs:string"/>
+      <xs:element name="mean" type="xs:float"/>
+      <xs:element name="stddev" type="xs:float"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ======== Camera/Depth Camera ======== -->
+  <xs:complexType name="imageType">
+    <xs:sequence>
+      <xs:element name="width" type="xs:int"/>
+      <xs:element name="height" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="clipType">
+    <xs:sequence>
+      <xs:element name="near" type="xs:float"/>
+      <xs:element name="far" type="xs:float"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ======== Collision Material ======== -->
+  <xs:element name="collision_material" type="sim:collisionMaterialType"/>
+
+  <xs:complexType name="collisionMaterialType">
+    <xs:sequence>
+      <xs:element name="friction" type="sim:frictionType"/>
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="frictionType">
+    <xs:attribute name="static" type="xs:float" use="required"/>
+    <xs:attribute name="dynamic" type="xs:float" use="required"/>
+  </xs:complexType>
+
+</xs:schema>
